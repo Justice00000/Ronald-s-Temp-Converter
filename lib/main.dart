@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const TempConverterApp());
+void main() => runApp(const RonaldTempConverterApp());
 
-class TempConverterApp extends StatelessWidget {
-  const TempConverterApp({super.key});
+class RonaldTempConverterApp extends StatelessWidget {
+  const RonaldTempConverterApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: 'Temperature Converter',
-      home: ConverterScreen(),
+    return MaterialApp(
+      theme: ThemeData.dark(),
+      home: const DarkThemeConverterScreen(),
     );
   }
 }
 
-class ConverterScreen extends StatefulWidget {
-  const ConverterScreen({super.key});
+class DarkThemeConverterScreen extends StatefulWidget {
+  const DarkThemeConverterScreen({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _ConverterScreenState createState() => _ConverterScreenState();
+  _DarkThemeConverterScreenState createState() =>
+      _DarkThemeConverterScreenState();
 }
 
-class _ConverterScreenState extends State<ConverterScreen> {
-  String _selectedConversion = 'Fahrenheit to Celsius'; // Default conversion
+class _DarkThemeConverterScreenState extends State<DarkThemeConverterScreen> {
+  String _selectedConversion = 'Fahrenheit to Celsius';
   final TextEditingController _controller = TextEditingController();
   String _convertedValue = '';
   final List<String> _conversionHistory = [];
@@ -45,7 +46,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
 
     setState(() {
       _convertedValue = convertedTemp.toStringAsFixed(2);
-      _conversionHistory.insert(0, historyEntry); // Add latest at the top
+      _conversionHistory.insert(0, historyEntry);
     });
   }
 
@@ -53,15 +54,25 @@ class _ConverterScreenState extends State<ConverterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Temperature Converter'),
+        title: const Text('Ronald Temp Converter'),
+        centerTitle: true,
       ),
-      body: Padding(
+      body: Container(
         padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.black, Colors.grey[900]!],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         child: Column(
           children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                const Icon(Icons.thermostat_outlined,
+                    color: Colors.blue, size: 30),
                 Radio<String>(
                   value: 'Fahrenheit to Celsius',
                   groupValue: _selectedConversion,
@@ -71,7 +82,9 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     });
                   },
                 ),
-                Expanded(child: const Text('Fahrenheit to Celsius')),
+                const Text('F to C', style: TextStyle(fontSize: 18)),
+                const SizedBox(width: 10),
+                const Icon(Icons.thermostat, color: Colors.red, size: 30),
                 Radio<String>(
                   value: 'Celsius to Fahrenheit',
                   groupValue: _selectedConversion,
@@ -81,38 +94,52 @@ class _ConverterScreenState extends State<ConverterScreen> {
                     });
                   },
                 ),
-                Expanded(child: const Text('Celsius to Fahrenheit')),
+                const Text('C to F', style: TextStyle(fontSize: 18)),
               ],
             ),
+            const SizedBox(height: 20),
             TextField(
               controller: _controller,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Enter Temperature',
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
+                filled: true,
+                fillColor: Colors.grey[700],
               ),
+              style: const TextStyle(color: Colors.white),
               keyboardType: TextInputType.number,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _convertTemperature,
-              child: const Text('CONVERT'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.deepOrangeAccent,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              ),
+              child: const Text('CONVERT', style: TextStyle(fontSize: 18)),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
             Text(
               'Converted Value: $_convertedValue',
-              style: const TextStyle(fontSize: 24),
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.lightGreenAccent,
+              ),
             ),
-            const Divider(),
-            const Text(
-              'Conversion History:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            const Divider(color: Colors.white),
             Expanded(
               child: ListView.builder(
                 itemCount: _conversionHistory.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(_conversionHistory[index]),
+                    leading:
+                        const Icon(Icons.history, color: Colors.yellowAccent),
+                    title: Text(
+                      _conversionHistory[index],
+                      style: const TextStyle(color: Colors.white),
+                    ),
                   );
                 },
               ),
